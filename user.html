@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách người dùng</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Danh sách người đã đăng nhập</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Hình ảnh</th>
+                    <th>Tên</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody id="userTable"></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadUsers() {
+            const res = await fetch("/api/users");
+            const users = await res.json();
+            const table = document.getElementById("userTable");
+            table.innerHTML = users.map(user => `
+                <tr>
+                    <td><img src="${user.picture}" width="40" height="40"></td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                </tr>
+            `).join('');
+        }
+
+        loadUsers();
+    </script>
+</body>
+</html>
