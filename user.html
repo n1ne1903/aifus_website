@@ -39,12 +39,17 @@
             font-style: italic;
             color: #999;
         }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container mt-5">
         <h2>Danh sách người đã đăng nhập</h2>
+        <input type="text" id="searchInput" class="form-control search-box" placeholder="Tìm kiếm người dùng...">
         <table class="table table-bordered table-striped">
             <thead class="thead-dark">
                 <tr>
@@ -62,6 +67,8 @@
     </div>
 
     <script>
+        let usersData = [];
+
         async function loadUsers() {
             try {
                 const response = await fetch("/api/users");
@@ -70,21 +77,8 @@
                 }
 
                 const users = await response.json();
-                const table = document.getElementById("userTable");
-
-                if (users.length === 0) {
-                    table.innerHTML = `<tr class="no-users">
-                        <td colspan="3">Chưa có người dùng đăng nhập.</td>
-                    </tr>`;
-                } else {
-                    table.innerHTML = users.map(user => `
-                        <tr>
-                            <td><img src="${user.picture}" alt="Ảnh đại diện"></td>
-                            <td>${user.name}</td>
-                            <td>${user.email}</td>
-                        </tr>
-                    `).join('');
-                }
+                usersData = users;
+                renderUsers(users);
             } catch (error) {
                 console.error("Lỗi khi tải danh sách người dùng:", error);
                 document.getElementById("userTable").innerHTML = `
@@ -93,6 +87,32 @@
                     </tr>`;
             }
         }
+
+        function renderUsers(users) {
+            const table = document.getElementById("userTable");
+            if (users.length === 0) {
+                table.innerHTML = `<tr class="no-users">
+                    <td colspan="3">Chưa có người dùng đăng nhập.</td>
+                </tr>`;
+            } else {
+                table.innerHTML = users.map(user => `
+                    <tr>
+                        <td><img src="${user.picture}" alt="Ảnh đại diện"></td>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        document.getElementById("searchInput").addEventListener("input", function (e) {
+            const keyword = e.target.value.toLowerCase();
+            const filteredUsers = usersData.filter(user =>
+                user.name.toLowerCase().includes(keyword) ||
+                user.email.toLowerCase().includes(keyword)
+            );
+            renderUsers(filteredUsers);
+        });
 
         loadUsers();
     </script>
