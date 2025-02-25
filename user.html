@@ -71,7 +71,8 @@
 
         async function loadUsers() {
             try {
-                const response = await fetch("/api/users");
+                const response = await fetch("users.json");
+
                 if (!response.ok) {
                     throw new Error("Không thể lấy dữ liệu từ server.");
                 }
