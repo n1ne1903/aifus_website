@@ -1,41 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách người dùng</title>
     <link rel="stylesheet" href="css/bootstrap.css">
+    <style>
+        body {
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            margin-top: 20px;
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+        }
+
+        .no-users {
+            text-align: center;
+            font-style: italic;
+            color: #999;
+        }
+    </style>
 </head>
+
 <body>
     <div class="container mt-5">
         <h2>Danh sách người đã đăng nhập</h2>
-        <table class="table table-bordered">
-            <thead>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
                 <tr>
                     <th>Hình ảnh</th>
                     <th>Tên</th>
                     <th>Email</th>
                 </tr>
             </thead>
-            <tbody id="userTable"></tbody>
+            <tbody id="userTable">
+                <tr class="no-users">
+                    <td colspan="3">Chưa có người dùng đăng nhập.</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 
     <script>
         async function loadUsers() {
-            const res = await fetch("/api/users");
-            const users = await res.json();
-            const table = document.getElementById("userTable");
-            table.innerHTML = users.map(user => `
-                <tr>
-                    <td><img src="${user.picture}" width="40" height="40"></td>
-                    <td>${user.name}</td>
-                    <td>${user.email}</td>
-                </tr>
-            `).join('');
+            try {
+                const response = await fetch("/api/users");
+                if (!response.ok) {
+                    throw new Error("Không thể lấy dữ liệu từ server.");
+                }
+
+                const users = await response.json();
+                const table = document.getElementById("userTable");
+
+                if (users.length === 0) {
+                    table.innerHTML = `<tr class="no-users">
+                        <td colspan="3">Chưa có người dùng đăng nhập.</td>
+                    </tr>`;
+                } else {
+                    table.innerHTML = users.map(user => `
+                        <tr>
+                            <td><img src="${user.picture}" alt="Ảnh đại diện"></td>
+                            <td>${user.name}</td>
+                            <td>${user.email}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error("Lỗi khi tải danh sách người dùng:", error);
+                document.getElementById("userTable").innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-danger">Lỗi tải dữ liệu. Vui lòng thử lại sau.</td>
+                    </tr>`;
+            }
         }
 
         loadUsers();
     </script>
 </body>
+
 </html>

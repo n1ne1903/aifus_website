@@ -1,36 +1,6 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
-</head>
-<body>
-    <div class="container text-center mt-5">
-        <h2>Đăng nhập bằng Google</h2>
-        <div id="g_id_onload"
-             data-client_id="139571384879-uegmd0f2v6iht16ae4pbjfritedl5etm.apps.googleusercontent.com"
-             data-callback="handleCredentialResponse"
-             data-auto_prompt="false">
-        </div>
-        <div class="g_id_signin" data-type="standard"></div>
-    </div>
 
-    <script>
-        function handleCredentialResponse(response) {
-            const data = JSON.parse(atob(response.credential.split('.')[1]));
-            localStorage.setItem('user', JSON.stringify(data));
-            window.location.href = 'index.html';
-        }
-    </script>
-</body>
-</html> -->
 <!DOCTYPE html>
-<html lang="vn">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
