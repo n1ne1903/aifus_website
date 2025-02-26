@@ -71,8 +71,7 @@
 
         async function loadUsers() {
             try {
-                const response = await fetch("users.json");
-
+                const response = await fetch("https://serveruser-hpv2.onrender.com");
                 if (!response.ok) {
                     throw new Error("Không thể lấy dữ liệu từ server.");
                 }
@@ -88,6 +87,9 @@
                     </tr>`;
             }
         }
+
+        // Tự động tải dữ liệu mới từ Google Sheets mỗi 10 giây
+        setInterval(loadUsers, 10000);
 
         function renderUsers(users) {
             const table = document.getElementById("userTable");
