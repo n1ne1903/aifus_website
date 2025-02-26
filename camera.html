@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phát hiện buồn ngủ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        video {
+            width: 60%;
+            border: 2px solid black;
+            margin-top: 10px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #countdown {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Phát hiện buồn ngủ</h1>
+
+    <label for="time-select">Chọn thời gian ghi:</label>
+    <select id="time-select">
+        <option value="30">30 giây</option>
+        <option value="600">10 phút</option>
+        <option value="1500">25 phút</option>
+    </select>
+
+    <br>
+    <button id="start-btn">Bắt đầu</button>
+    <button id="pause-btn" disabled>Tạm dừng</button>
+
+    <h2 id="countdown">Thời gian còn lại: --</h2>
+
+    <br>
+    <video id="video" autoplay></video>
+
+    <h2 id="result"></h2>
+
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isPaused = false;
+        let stream;
+        let timeLimit;
+        let remainingTime;
+        let timeoutID;
+        let countdownInterval;
+
+        document.getElementById("start-btn").addEventListener("click", async function () {
+            if (!isPaused) {
+                timeLimit = parseInt(document.getElementById("time-select").value);
+                remainingTime = timeLimit;
+
+                document.getElementById("countdown").innerText = `Thời gian còn lại: ${remainingTime}s`;
+                
+                // Cập nhật bộ đếm mỗi giây
+                countdownInterval = setInterval(() => {
+                    if (!isPaused && remainingTime > 0) {
+                        remainingTime--;
+                        document.getElementById("countdown").innerText = `Thời gian còn lại: ${remainingTime}s`;
+                    }
+                }, 1000);
+
+                // Mở camera
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById("video").srcObject = stream;
+
+                // Khởi tạo MediaRecorder
+                mediaRecorder = new MediaRecorder(stream);
+                recordedChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = async () => {
+                    clearInterval(countdownInterval);
+                    document.getElementById("countdown").innerText = "Thời gian còn lại: Hoàn thành";
+
+                    const blob = new Blob(recordedChunks, { type: "video/webm" });
+                    const formData = new FormData();
+                    formData.append("file", blob, "recorded-video.webm");
+
+                    try {
+                        // Gửi video lên server
+                        const response = await fetch("http://localhost:8000/detect_video", {
+                            method: "POST",
+                            body: formData,
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        
+                        console.log("Server response:", result);
+                        
+                        // Kiểm tra nếu server có trả về drowsy_counter
+                        if (result.drowsy_counter !== undefined) {
+                            document.getElementById("result").innerText = `Số lần buồn ngủ: ${result.drowsy_counter}`;
+                        } else {
+                            document.getElementById("result").innerText = "Không có dữ liệu buồn ngủ trả về.";
+                        }
+                    } catch (error) {
+                        console.error("Lỗi khi gửi video:", error);
+                        document.getElementById("result").innerText = "Lỗi khi phân tích video.";
+                    }
+                };
+
+                mediaRecorder.start();
+                document.getElementById("pause-btn").disabled = false;
+
+                // Dừng ghi sau thời gian đã chọn
+                timeoutID = setTimeout(() => {
+                    mediaRecorder.stop();
+                    stream.getTracks().forEach(track => track.stop());
+                    document.getElementById("pause-btn").disabled = true;
+                }, timeLimit * 1000);
+            } else {
+                mediaRecorder.resume();
+                isPaused = false;
+                document.getElementById("pause-btn").innerText = "Tạm dừng";
+            }
+        });
+
+        document.getElementById("pause-btn").addEventListener("click", function () {
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                mediaRecorder.pause();
+                isPaused = true;
+                document.getElementById("pause-btn").innerText = "Tiếp tục";
+                clearTimeout(timeoutID);
+                clearInterval(countdownInterval);
+            } else if (mediaRecorder && mediaRecorder.state === "paused") {
+                mediaRecorder.resume();
+                isPaused = false;
+                document.getElementById("pause-btn").innerText = "Tạm dừng";
+
+                // Tiếp tục bộ đếm ngược
+                countdownInterval = setInterval(() => {
+                    if (!isPaused && remainingTime > 0) {
+                        remainingTime--;
+                        document.getElementById("countdown").innerText = `Thời gian còn lại: ${remainingTime}s`;
+                    }
+                }, 1000);
+
+                // Tiếp tục đặt timeout cho video
+                timeoutID = setTimeout(() => {
+                    mediaRecorder.stop();
+                    stream.getTracks().forEach(track => track.stop());
+                    document.getElementById("pause-btn").disabled = true;
+                }, remainingTime * 1000);
+            }
+        });
+    </script>
+
+</body>
+</html>
