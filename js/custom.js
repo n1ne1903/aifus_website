@@ -78,3 +78,29 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const comingSoonBtn = document.getElementById("comingSoonBtn");
+    const githubDownloadBtn = document.getElementById("githubDownloadBtn");
+
+    if (comingSoonBtn) {
+        comingSoonBtn.addEventListener("click", () => {
+            if (!user) {
+                window.location.href = "login.html"; // Chuyển hướng đến login.html nếu chưa đăng nhập
+            } else {
+                alert("Tính năng sắp ra mắt!"); // Nếu đã đăng nhập, chỉ hiển thị thông báo
+            }
+        });
+    }
+
+    if (githubDownloadBtn) {
+        githubDownloadBtn.addEventListener("click", () => {
+            if (user) {
+                window.location.href = "https://github.com/n1ne1903/Pomodoro-with-camera-detect-distracted"; // Nếu đã đăng nhập, đến GitHub
+            } else {
+                window.location.href = "login.html"; // Nếu chưa đăng nhập, yêu cầu đăng nhập trước
+            }
+        });
+    }
+});
