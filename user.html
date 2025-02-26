@@ -99,7 +99,7 @@
             } else {
                 table.innerHTML = users.map(user => `
                     <tr>
-                        <td><img src="${user.picture}" alt="Ảnh đại diện"></td>
+                        <td><img src="${user.picture}" alt="Ảnh đại diện" onerror="this.onerror=null;this.src='https://example.com/default-avatar.png';"></td>
                         <td>${user.name}</td>
                         <td>${user.email}</td>
                     </tr>
