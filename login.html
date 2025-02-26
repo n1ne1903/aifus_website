@@ -13,14 +13,14 @@
     <div class="container text-center mt-5">
         <h2>Đăng nhập bằng Google</h2>
         <div id="g_id_onload"
-             data-client_id="YOUR_GOOGLE_CLIENT_ID"
+             data-client_id="139571384879-uegmd0f2v6iht16ae4pbjfritedl5etm.apps.googleusercontent.com"
              data-callback="handleCredentialResponse"
              data-auto_prompt="false">
         </div>
         <div class="g_id_signin" data-type="standard"></div>
     </div>
 
-    <script>
+    <!-- <script>
         async function handleCredentialResponse(response) {
             const data = JSON.parse(atob(response.credential.split('.')[1]));
             console.log("Người dùng đăng nhập:", data);
@@ -42,6 +42,6 @@
             
             window.location.href = 'user.html';
         }
-    </script>
+    </script> -->
 </body>
 </html>
