@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -39,6 +39,53 @@
             });
             
             window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="container text-center mt-5">
+        <h2>Đăng nhập bằng Google</h2>
+        <div id="g_id_onload"
+             data-client_id="YOUR_GOOGLE_CLIENT_ID"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin" data-type="standard"></div>
+    </div>
+
+    <script>
+        async function handleCredentialResponse(response) {
+            const data = JSON.parse(atob(response.credential.split('.')[1]));
+            console.log("Người dùng đăng nhập:", data);
+            
+            // Lưu vào localStorage
+            localStorage.setItem('user', JSON.stringify(data));
+            
+            // Gửi dữ liệu lên server Render
+            await fetch("https://serveruser-1-0625.onrender.com/api/addUser", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    sub: data.sub,
+                    name: data.name,
+                    email: data.email,
+                    picture: data.picture
+                })
+            });
+            
+            window.location.href = 'user.html';
         }
     </script>
 </body>
