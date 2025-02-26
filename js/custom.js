@@ -63,3 +63,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
+document.addEventListener("DOMContentLoaded", () => {
+    const tryFreeBtn = document.getElementById("tryFreeBtn");
+
+    if (tryFreeBtn) {
+        tryFreeBtn.addEventListener("click", () => {
+            const user = JSON.parse(localStorage.getItem("user"));
+
+            if (user) {
+                window.location.href = "camera.html"; // Nếu đã đăng nhập, chuyển đến camera.html
+            } else {
+                window.location.href = "login.html"; // Nếu chưa đăng nhập, chuyển đến login.html
+            }
+        });
+    }
+});
