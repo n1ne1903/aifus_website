@@ -52,3 +52,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+        if (document.getElementById("userName")) {
+            document.getElementById("userName").innerText = decodeURIComponent(escape(user.name));
+        }
+        if (document.getElementById("userAvatar")) {
+            document.getElementById("userAvatar").src = user.picture;
+        }
+    }
+});
