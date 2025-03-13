@@ -105,3 +105,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 /////
+document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user) {
+        document.getElementById("loginBtn").style.display = "none"; 
+        document.getElementById("userInfo").style.display = "flex";
+        document.getElementById("userImg").src = user.picture;
+        
+        // Fix lỗi font
+        document.getElementById("userName").innerText = decodeURIComponent(escape(user.name));
+    }
+});
+
+function logout() {
+    localStorage.removeItem("user");
+    window.location.reload();
+}
