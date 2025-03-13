@@ -104,3 +104,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user) {
+        document.getElementById("loginBtn").style.display = "none"; // Ẩn nút đăng nhập
+        document.getElementById("userInfo").style.display = "flex";
+        document.getElementById("userImg").src = user.picture;
+        document.getElementById("userName").innerText = user.name;
+    } else {
+        document.getElementById("loginBtn").style.display = "inline-block"; // Hiển thị đăng nhập
+        document.getElementById("userInfo").style.display = "none";
+    }
+});
+
+function logout() {
+    localStorage.removeItem("user");
+    window.location.reload();
+}
