@@ -104,30 +104,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-const translations = {
-    "Try for free": "Dùng thử miễn phí",
-    "or Download demo from Github": "hoặc Tải bản demo từ Github",
-    "Coming soon": "Sắp ra mắt",
-    "Login": "Đăng nhập",
-    "Logout": "Đăng xuất",
-    "Username": "Tên người dùng",
-    "Email": "Email",
-    "Password": "Mật khẩu",
-    "Submit": "Gửi",
-    "Dashboard": "Bảng điều khiển",
-    "Settings": "Cài đặt",
-    "Profile": "Hồ sơ",
-    "Language": "Ngôn ngữ",
-    "Sign in with Google": "Đăng nhập bằng Google",
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("*").forEach((el) => {
-        if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
-            const text = el.textContent.trim();
-            if (translations[text]) {
-                el.textContent = translations[text];
-            }
-        }
-    });
-});
