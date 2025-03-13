@@ -1200,6 +1200,12 @@ a:focus {
   width: auto;
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* Đẩy phần đăng nhập sang bên phải */
+}
+
 #loginBtn {
   font-size: 16px;
   font-weight: bold;
@@ -1220,7 +1226,7 @@ a:focus {
 
 .navbar-collapse {
   flex-grow: 1;
-  justify-content: flex-end; /* Đảm bảo menu căn phải */
+  justify-content: center; /* Căn giữa menu */
 }
 
 
